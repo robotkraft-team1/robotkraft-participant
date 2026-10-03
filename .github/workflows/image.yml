@@ -12,6 +12,7 @@ on:
       - pyproject.toml
       - uv.lock
       - scripts/**
+      - urdf/**
       - .github/workflows/image.yml
   workflow_dispatch:
 

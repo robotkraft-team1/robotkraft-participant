@@ -49,3 +49,35 @@ script-follower:
 # Usage : make script-leader FILE=scripts/robot/move_central_position.py
 script-leader:
 	docker compose run --rm -e ROBOT_PORT=/dev/ttyACM1 lerobot-leader python3 $(FILE)
+
+# Cinématique inverse / commande de position du follower (variante kinematics).
+# Dry-run par défaut : afficher les ticks sans bouger le bras ne nécessite aucun
+# argument. Pour déplacer le bras : ARGS='--execute' (le bras bouge vraiment).
+# Usage :
+#   make ik ARGS='--point 0.30 -0.10 0.25'
+#   make ik ARGS='--point 0.30 -0.10 0.25 --execute'
+#   make ik ARGS='--joints shoulder_lift=-20 elbow_flex=30'
+ik:
+	@[ "$${ROBOTKRAFT_IMAGE}" = "robotkraft:kinematics" ] || grep -q '^ROBOTKRAFT_IMAGE=robotkraft:kinematics' .env 2>/dev/null \
+		|| { echo "Variante kinematics requise : make use-kinematics && make build-kinematics"; exit 1; }
+	# lerobot-follower (un seul bras, /dev/ttyACM0) : IK ne pilote que le follower,
+	# pas le service lerobot qui monte les deux bras (/dev/lerobot_follower + _leader).
+	docker compose run --rm -e ROBOT_PORT=/dev/ttyACM0 lerobot-follower \
+		python3 scripts/kinematics/ik.py $(ARGS)
+
+# Visualisation 3D du bras (meshcat, navigateur). Le port 7000 est publié, le
+# modèle s'ouvre sur http://localhost:7000.
+#   make viz ARGS='--sequence scripts/kinematics/sequence_demo.json'   (cibles, dry-run)
+#   make viz ARGS='--point 0.30 -0.10 0.25'
+#   make watch-arms   le bras virtuel suit le bras réel (bras branché, lecture seule)
+viz:
+	@[ "$${ROBOTKRAFT_IMAGE}" = "robotkraft:kinematics" ] || grep -q '^ROBOTKRAFT_IMAGE=robotkraft:kinematics' .env 2>/dev/null \
+		|| { echo "Variante kinematics requise : make use-kinematics && make build-kinematics"; exit 1; }
+	docker compose run --rm -p 7000:7000 lerobot-follower \
+		python3 scripts/kinematics/visualize.py $(ARGS)
+
+watch-arms:
+	@[ "$${ROBOTKRAFT_IMAGE}" = "robotkraft:kinematics" ] || grep -q '^ROBOTKRAFT_IMAGE=robotkraft:kinematics' .env 2>/dev/null \
+		|| { echo "Variante kinematics requise : make use-kinematics && make build-kinematics"; exit 1; }
+	docker compose run --rm -p 7000:7000 -e ROBOT_PORT=/dev/ttyACM0 lerobot-follower \
+		python3 scripts/kinematics/visualize.py --watch

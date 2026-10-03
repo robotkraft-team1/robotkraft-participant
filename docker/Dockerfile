@@ -31,14 +31,23 @@ WORKDIR /workspace
 # Dependances. Le cache BuildKit survit entre deux constructions : une modification
 # de uv.lock ne retelecharge que les paquets qui ont reellement change, torch et les
 # autres poids lourds sont repris du cache.
+#
+# VARIANTE=kinematics : la base cpu plus le solveur IK (placo). On n'ajoute pas de
+# torch CUDA, l'IK ne demande que du CPU ; d'ou "base cpu + extra kinematics".
 COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/opt/uv-cache,sharing=locked \
-    uv venv .venv && uv sync --frozen --no-dev --extra "${VARIANTE}"
+    uv venv .venv && \
+    case "${VARIANTE}" in \
+      kinematics) uv sync --frozen --no-dev --extra cpu --extra kinematics ;; \
+      *)         uv sync --frozen --no-dev --extra "${VARIANTE}" ;; \
+    esac
 
 RUN mkdir -p .venv/lib/python3.12/site-packages/cv2/qt/fonts \
     && cp /usr/share/fonts/truetype/dejavu/*.ttf .venv/lib/python3.12/site-packages/cv2/qt/fonts/ 2>/dev/null || true
 
 # En dernier : ce qui change le plus souvent, pour ne rien invalider en amont
 COPY scripts/ scripts/
+# L'URDF calibré d'usine du SO-101, utilisé par la cinématique (scripts/kinematics/).
+COPY urdf/ urdf/
 
 CMD ["/bin/bash"]

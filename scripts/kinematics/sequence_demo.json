@@ -1,0 +1,28 @@
+{
+  "_comment": "Test minimal : petits deplacements RELATIFS a partir de la position actuelle, puis retour exact au depart. Angles en degres Lerobot (0 = milieu de la plage calibree). Au repos, shoulder_lift est pres de sa butee basse et elbow_flex pres de sa butee haute : on les deplace dans le sens qui s'en eloigne.",
+  "steps": [
+    {
+      "label": "1 - decoller le bras",
+      "relative": true,
+      "joints": { "shoulder_lift": 15, "elbow_flex": -20 },
+      "settle_s": 3
+    },
+    {
+      "label": "2 - tourner un peu",
+      "relative": true,
+      "joints": { "shoulder_pan": 10 },
+      "settle_s": 3
+    },
+    {
+      "label": "3 - deplier le poignet",
+      "relative": true,
+      "joints": { "elbow_flex": -15, "wrist_flex": 10 },
+      "settle_s": 3
+    },
+    {
+      "label": "4 - retour a la position de depart",
+      "return": "initial",
+      "settle_s": 3
+    }
+  ]
+}

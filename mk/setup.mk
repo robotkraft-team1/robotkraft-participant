@@ -48,6 +48,17 @@ use-cuda:
 	@echo 'ROBOTKRAFT_IMAGE=ghcr.io/alsacedigitale/robotkraft:cuda' >> .env
 	@echo "Variante CUDA selectionnee. Lance : docker compose pull"
 
+# Variante cinématique : base CPU + solveur IK (placo). A construire en local
+# (make build-kinematics) tant que l'image n'est pas publiee sur ghcr.io.
+use-kinematics:
+	@touch .env && sed -i.bak '/^ROBOTKRAFT_IMAGE=/d' .env && rm -f .env.bak
+	@echo 'ROBOTKRAFT_IMAGE=robotkraft:kinematics' >> .env
+	@echo "Variante kinematiques selectionnee (image locale robotkraft:kinematics). Lance : make build-kinematics"
+
+# Construit la variante kinematiques (base cpu + placo) sous l'etiquette locale.
+build-kinematics:
+	docker build -f docker/Dockerfile --build-arg VARIANTE=kinematics -t robotkraft:kinematics .
+
 use-cpu:
 	@touch .env && sed -i.bak '/^ROBOTKRAFT_IMAGE=/d' .env && rm -f .env.bak
 	@echo "Variante CPU selectionnee (defaut). Lance : docker compose pull"

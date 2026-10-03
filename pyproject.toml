@@ -17,6 +17,14 @@ dependencies = [
 # equipes. La version suit la contrainte de lerobot 0.5.1 (torch<2.11).
 cpu = ["torch==2.10.0", "torchvision==0.25.0"]
 cuda = ["torch==2.10.0", "torchvision==0.25.0"]
+# Solveur IK (placo) pour la cinématique inverse du bras, utilisé par
+# scripts/kinematics/. Version bornée par lerobot[placo-dep].
+# cmeel-urdfdom est pinné à 4.0 : placo est compilé contre l'ABI urdfdom 4,
+# or pin accepte ">= 4" et résout 6.0, ce qui casse l'import
+# ("liburdfdom_sensor.so.4.0: cannot open shared object file").
+# cmeel-tinyxml2 idem : placo attend la lib 10, mais le resolveur prend la 11
+# ("libtinyxml2.so.10: cannot open shared object file").
+kinematics = ["placo>=0.9.6,<0.9.17", "cmeel-urdfdom==4.0.1", "cmeel-tinyxml2==10.0.0"]
 
 [tool.uv]
 exclude-dependencies = ["opencv-python-headless"]
