@@ -63,7 +63,7 @@ ik:
 	# lerobot-follower (un seul bras, /dev/ttyACM0) : IK ne pilote que le follower,
 	# pas le service lerobot qui monte les deux bras (/dev/lerobot_follower + _leader).
 	docker compose run --rm -e ROBOT_PORT=/dev/ttyACM0 lerobot-follower \
-		python3 scripts/kinematics/ik.py $(ARGS)
+		python3 scripts/kinematics/main.py $(ARGS)
 
 # Visualisation 3D du bras (meshcat, navigateur). Le port 7000 est publié, le
 # modèle s'ouvre sur http://localhost:7000.

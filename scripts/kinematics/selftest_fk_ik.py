@@ -1,4 +1,4 @@
-"""Self-test hors matériel de l'IK de ik.py (placo + URDF SO-101), sans toucher au bras.
+"""Self-test hors matériel de l'IK de robot_arm/ (placo + URDF SO-101), sans toucher au bras.
 
 Depuis la pose de repos (bras replié), des points éloignés doivent être atteints à
 moins de 1 mm, un point hors de portée doit être détecté, et un outil décalé et tourné
@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import ik  # noqa: E402
+import robot_arm as ik  # noqa: E402
 
 REST_DEG = {"shoulder_pan": 3.6, "shoulder_lift": -83.5, "elbow_flex": 95.9, "wrist_flex": 15.6, "wrist_roll": 97.4}
 REACHABLE = [(0.20, 0.00, 0.20), (0.20, 0.12, 0.15), (0.20, -0.12, 0.15), (0.28, 0.00, 0.10)]

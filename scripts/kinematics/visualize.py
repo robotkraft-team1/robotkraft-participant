@@ -1,7 +1,7 @@
 """Visualisation 3D du bras SO-ARM101 dans le navigateur (meshcat).
 
 Affiche l'URDF so101_new_calib avec les angles calculés comme Lerobot
-(voir ik.py : degrés = (Present_Position - milieu de plage) * 360 / 4095).
+(voir robot_arm/calibration.py : degrés = (Present_Position - milieu de plage) * 360 / 4095).
 L'URL exacte est affichée par meshcat au démarrage (ex. http://127.0.0.1:7000/static/).
 
 Les repères d'outil de tools.json sont dessinés en trièdres (x rouge, y vert, z bleu),
@@ -12,7 +12,7 @@ fixe quand une orientation est demandée : le grand trièdre de l'outil doit s'y
 
     --frames              bras immobile (pose réelle avec --port, sinon pose neutre) ;
     --watch               le modèle suit le bras réel (lecture seule, couple maintenu) ;
-    --sequence FICHIER    rejoue en boucle la séquence au rythme de ik.py --execute (aucun mouvement) ;
+    --sequence FICHIER    rejoue en boucle la séquence au rythme de main.py --execute (aucun mouvement) ;
     --point X Y Z         idem pour un seul point résolu par IK (orientation : --yaw/--pitch/--roll).
 
 Usage :
@@ -34,7 +34,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-import ik  # noqa: E402
+import robot_arm as ik  # noqa: E402
 
 STATUS_INTERVAL_S = 0.5
 SELECTED_TRIAD_M = 0.06
@@ -150,7 +150,7 @@ def hold(frames: ToolFrames, q: np.ndarray, interval_s: float) -> None:
 
 def replay(frames: ToolFrames, calib: dict, initial_raw: dict[str, int], planned: list[dict],
            move_s: float, settle_s: float) -> None:
-    """Rejoue en boucle les consignes qu'enverrait ik.py --execute, au même rythme."""
+    """Rejoue en boucle les consignes qu'enverrait main.py --execute, au même rythme."""
 
     def pause(seconds: float, raw: dict[str, int]) -> None:
         for _ in range(max(1, round(seconds * ik.RATE_HZ))):
@@ -197,7 +197,8 @@ def main() -> int:
     cmd.add_argument("--sequence", type=Path, metavar="FICHIER", help="rejouer les cibles d'une séquence")
     cmd.add_argument("--point", nargs=3, type=float, metavar=("X", "Y", "Z"), help="pose résolue par IK")
     for angle in ("yaw", "pitch", "roll"):
-        p.add_argument(f"--{angle}", type=float, default=None, help="avec --point, en degrés (voir ik.py)")
+        p.add_argument(f"--{angle}", type=float, default=None,
+                       help="avec --point, en degrés (voir robot_arm/kinematics.py)")
     p.add_argument("--port", default=os.environ.get("ROBOT_PORT"), help="port série (défaut : $ROBOT_PORT)")
     p.add_argument("--calib", type=Path, default=Path(os.environ.get("CALIB_FILE", ik.DEFAULT_CALIB_FILE)),
                    help="fichier de calibration Lerobot, utilisé sans port")
@@ -242,7 +243,7 @@ def main() -> int:
     planned = ik.plan_sequence(steps, calib, ik.pose_from_raw(initial_raw, calib), kin)
     problems = ik.check_plan(initial_raw, planned, calib, ik.DEFAULT_MIN_Z_M, kin)
     if problems:
-        print("[problèmes] ik.py --execute refusera ce plan :\n  " + "\n  ".join(problems))
+        print("[problèmes] main.py --execute refusera ce plan :\n  " + "\n  ".join(problems))
     show_targets(viz, planned)
     replay(ToolFrames(viz, model, kin.tool), calib, initial_raw, planned, args.move_time, args.settle)
     return 0
