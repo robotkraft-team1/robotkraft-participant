@@ -1,0 +1,41 @@
+{
+  "_comment": "Points ABSOLUS en metres (repere base : origine sous le socle, x vers l'avant, y vers la gauche, z vers le haut) et orientation de l'axe de la pince en degres : pitch 0 = horizontal, -90 = vers le bas ; roll = rotation autour de cet axe (= -wrist_roll) ; yaw (direction vue du dessus) est impose par la position : s'il est donne, il est seulement verifie. Pince verticale (pitch -90) : seulement pres de la table (z <= 8 cm environ), wrist_flex est en butee au-dela. Verifier d'abord en dry-run.",
+  "tool": "centre_pince",
+  "steps": [
+    {
+      "label": "1 - au-dessus, pince vers le bas",
+      "point": [0.22, 0.00, 0.08],
+      "orientation": {"pitch": -90, "roll": 0},
+      "settle_s": 2
+    },
+    {
+      "label": "2 - descente",
+      "point": [0.22, 0.00, 0.04],
+      "orientation": {"pitch": -90, "roll": 0},
+      "settle_s": 2
+    },
+    {
+      "label": "3 - rotation de la pince",
+      "point": [0.22, 0.00, 0.04],
+      "orientation": {"pitch": -90, "roll": 90},
+      "settle_s": 2
+    },
+    {
+      "label": "4 - a gauche, inclinee a 45 degres",
+      "point": [0.24, 0.10, 0.12],
+      "orientation": {"pitch": -45, "roll": 0},
+      "settle_s": 2
+    },
+    {
+      "label": "5 - devant, pince horizontale",
+      "point": [0.28, 0.00, 0.16],
+      "orientation": {"yaw": 0, "pitch": 0, "roll": 0},
+      "settle_s": 2
+    },
+    {
+      "label": "6 - retour a la position de depart",
+      "return": "initial",
+      "settle_s": 2
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "_comment": "Points ABSOLUS en metres, repere base du bras : origine sous le socle (table a z = 0), x vers l'avant, y vers la gauche du bras, z vers le haut. Le point vise est entre les machoires (gripper_frame_link). Verifier d'abord en dry-run : ik.py refuse les points hors de portee, en butee, ou trop pres de la table.",
+  "_comment": "Points ABSOLUS en metres, repere base du bras : origine sous le socle (table a z = 0), x vers l'avant, y vers la gauche du bras, z vers le haut. Le point vise est celui de l'outil par defaut de tools.json (cle \"tool\" pour en choisir un autre). Verifier d'abord en dry-run : ik.py refuse les points hors de portee, en butee, ou trop pres de la table.",
   "steps": [
     {
       "label": "1 - au-dessus, devant",

@@ -1,0 +1,21 @@
+{
+  "_comment": "Reperes d'outil (TCP) : le point que ik.py amene en (x, y, z). Chaque outil est decale depuis gripper_frame_link, repere de l'URDF place sur la face interieure de la machoire fixe, 6 mm avant son bout, centre dans l'epaisseur des machoires. Ses axes : z sort de la pince (vers le bout des machoires), x rentre dans la machoire fixe (la machoire mobile est du cote -x), y traverse l'epaisseur des machoires. xyz_m en metres, rpy_deg en degres (roll, pitch, yaw autour des axes fixes x, y, z, comme dans l'URDF). visualize.py affiche ces reperes et les recharge a chaque enregistrement de ce fichier.",
+  "default": "machoire_fixe",
+  "tools": {
+    "machoire_fixe": {
+      "_comment": "Repere d'origine de Lerobot (gripper_frame_link).",
+      "xyz_m": [0.0, 0.0, 0.0],
+      "rpy_deg": [0.0, 0.0, 0.0]
+    },
+    "centre_pince": {
+      "_comment": "Milieu entre les machoires, sur l'axe du wrist_roll, 6 mm avant le bout.",
+      "xyz_m": [-0.0079, 0.0, 0.0],
+      "rpy_deg": [0.0, 0.0, 0.0]
+    },
+    "bout_pince": {
+      "_comment": "Milieu entre les machoires, au niveau de leur bout.",
+      "xyz_m": [-0.0079, 0.0, 0.006],
+      "rpy_deg": [0.0, 0.0, 0.0]
+    }
+  }
+}

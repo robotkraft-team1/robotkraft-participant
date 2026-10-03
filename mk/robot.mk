@@ -69,6 +69,7 @@ ik:
 # modèle s'ouvre sur http://localhost:7000.
 #   make viz ARGS='--sequence scripts/kinematics/sequence_demo.json'   (cibles, dry-run)
 #   make viz ARGS='--point 0.30 -0.10 0.25'
+#   make viz ARGS='--point 0.22 0.05 0.05 --pitch -90 --roll 45 --tool centre_pince'
 #   make watch-arms   le bras virtuel suit le bras réel (bras branché, lecture seule)
 viz:
 	@[ "$${ROBOTKRAFT_IMAGE}" = "robotkraft:kinematics" ] || grep -q '^ROBOTKRAFT_IMAGE=robotkraft:kinematics' .env 2>/dev/null \
