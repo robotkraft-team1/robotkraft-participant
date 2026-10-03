@@ -1,12 +1,5 @@
-from enum import Enum
 import typing as T
-
-
-
-class TubeColor(Enum):
-    RED = 0
-    YELLOW = 1
-    BLUE = 2
+from .colors import TubeColor
 
 class Tube:
     def __init__(self, color: TubeColor) -> None:
