@@ -260,6 +260,20 @@ Toutes les commandes sont `make <cible>`. Le Makefile racine inclut `mk/{setup,r
 | `make record HF_USER=... TASK=...` | Enregistre un dataset de téléopération (`[NUM_EPISODES]`, `[EPISODE_TIME]`, `[RESET_TIME]`, `[RESUME]`) |
 | `make replay-episode HF_USER=... TASK=... [EPISODE=0]` | Rejoue un épisode d'un dataset enregistré (follower seul) |
 
+### VLA / ordres textuels (SmolVLA / π0)
+
+Piloter le follower par un **ordre textuel** (ex : « pick the red cube and place it in the rack ») via une VLA fine-tunée, au lieu d'une policy d'imitation ACT. Les caméras sont nommées `camera1` (scène OAK-D) + `camera2` (poignet UVC) pour correspondre au checkpoint `lerobot/smolvla_base` ; le chemin d'inférence asynchrone ne transmet aucun `rename_map`, ce nommage est donc obligatoire.
+
+| Commande | Description |
+|----------|-------------|
+| `make record-vla HF_USER=... TASK=... LANG_TASK="..." [WRIST_DEV=0]` | Enregistre un dataset VLA (2 caméras + instruction anglaise) par téléopération |
+| `make train-smolvla HF_USER=... TASK=... [STEPS=2000]` | Fine-tune une SmolVLA depuis `lerobot/smolvla_base` sur le dataset (GPU) |
+| `make train-pi0 HF_USER=... TASK=... [STEPS=2000]` | Fine-tune un π0 (optionnel, plus gourmand ; PEFT/LoRA conseillé sur slice A100 20 Go) |
+| `make push-checkpoint-vla HF_USER=... TASK=...` | Push le checkpoint SmolVLA sur HF Hub (requis avant `eval-vla` distante) |
+| `make eval-vla TASK=... LANG_TASK="..." HF_USER=... SERVER=ip:port [POLICY_TYPE=smolvla]` | Évalue la VLA : policy sur GPU distant, robot + caméras en local |
+
+> `LANG_TASK` est l'**entrée langage** de la VLA (instruction en anglais) : stockée dans le dataset à l'enregistrement, puis envoyée au policy serveur frame à frame à l'inférence. C'est elle qui pilote le bras. La variante π0 a des caméras nommées `camera0/1/2` : pour un dataset dédié π0, renommer les caméras dans `scripts/shell/record_vla_with_oak.sh` (voir le commentaire de `train-pi0` dans `mk/vla.mk`).
+
 ### Entraînement / évaluation
 
 | Commande | Description |
@@ -551,6 +565,20 @@ All commands are `make <target>`. The root Makefile includes `mk/{setup,robot,da
 |----------|-------------|
 | `make record HF_USER=... TASK=...` | Records a teleoperation dataset (`[NUM_EPISODES]`, `[EPISODE_TIME]`, `[RESET_TIME]`, `[RESUME]`) |
 | `make replay-episode HF_USER=... TASK=... [EPISODE=0]` | Replays an episode from a recorded dataset (follower only) |
+
+### VLA / text commands (SmolVLA / π0)
+
+Drive the follower with a **text instruction** (e.g. "pick the red cube and place it in the rack") via a fine-tuned VLA, instead of an ACT imitation policy. Cameras are named `camera1` (OAK-D scene) + `camera2` (wrist UVC) to match the `lerobot/smolvla_base` checkpoint; the async inference path transmits no `rename_map`, so this naming is mandatory.
+
+| Command | Description |
+|----------|-------------|
+| `make record-vla HF_USER=... TASK=... LANG_TASK="..." [WRIST_DEV=0]` | Records a VLA dataset (2 cameras + English instruction) via teleoperation |
+| `make train-smolvla HF_USER=... TASK=... [STEPS=2000]` | Fine-tunes a SmolVLA from `lerobot/smolvla_base` on the dataset (GPU) |
+| `make train-pi0 HF_USER=... TASK=... [STEPS=2000]` | Fine-tunes π0 (optional, heavier; PEFT/LoRA recommended on the 20 GB A100 slice) |
+| `make push-checkpoint-vla HF_USER=... TASK=...` | Pushes the SmolVLA checkpoint to the HF Hub (required before remote `eval-vla`) |
+| `make eval-vla TASK=... LANG_TASK="..." HF_USER=... SERVER=ip:port [POLICY_TYPE=smolvla]` | Evaluates the VLA: policy on a remote GPU, robot + cameras local |
+
+> `LANG_TASK` is the VLA's **language input** (English instruction): stored in the dataset at recording time, then sent to the policy server frame by frame at inference. It is what drives the arm. The π0 variant expects cameras named `camera0/1/2`: for a dedicated π0 dataset, rename the cameras in `scripts/shell/record_vla_with_oak.sh` (see the `train-pi0` comment in `mk/vla.mk`).
 
 ### Training / evaluation
 
