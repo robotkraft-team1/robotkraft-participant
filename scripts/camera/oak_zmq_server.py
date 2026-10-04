@@ -12,8 +12,8 @@ import zmq
 
 CAMERA_NAME = "top"
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 5555
-WIDTH = int(os.environ.get("WIDTH", "1920"))
-HEIGHT = int(os.environ.get("HEIGHT", "1080"))
+WIDTH = int(os.environ.get("WIDTH", "640"))
+HEIGHT = int(os.environ.get("HEIGHT", "480"))
 FPS = int(os.environ.get("FPS", "30"))
 
 context = zmq.Context()
@@ -36,6 +36,10 @@ with dai.Pipeline() as pipeline:
         while pipeline.isRunning():
             t0 = time.time()
             bgr = queue.get().getCvFrame()
+            # Garantit le shape exact (HEIGHT, WIDTH, 3) : depthai renvoie la résolution
+            # native la plus proche de (WIDTH, HEIGHT), on force la taille voulue pour
+            # que la config caméra lerobot (width/height) corresponde au frame envoyé.
+            bgr = cv2.resize(bgr, (WIDTH, HEIGHT))
             # lerobot ZMQCamera (color_mode=RGB) decode sans reconvertir : swap ici
             # pour que le frame reçu côté lerobot-record soit dans le bon ordre R/G/B.
             rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)

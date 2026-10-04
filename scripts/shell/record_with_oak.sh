@@ -1,13 +1,23 @@
 #!/bin/bash
-# Lance le serveur ZMQ OAK en arrière-plan puis lerobot-record avec camera zmq
+# Lance le serveur ZMQ OAK en arrière-plan puis lerobot-record
+# Optionnel : WRIST_DEVICE pour ajouter la caméra poignet (ex. WRIST_DEVICE=0)
 set -e
 
-python3 scripts/camera/oak_zmq_server.py &
+WIDTH="${WIDTH:-640}" HEIGHT="${HEIGHT:-360}" python3 scripts/camera/oak_zmq_server.py &
 ZMQ_PID=$!
 trap "kill $ZMQ_PID 2>/dev/null || true" EXIT
 
 echo "ZMQ server PID=$ZMQ_PID, attente 3s..."
 sleep 3
+
+# Construit le dict de caméras : top (OAK) + wrist (optionnelle)
+CAMERAS='top: {type: zmq, server_address: localhost, port: 5555, camera_name: top, fps: 30, width: 640, height: 360}'
+if [ -n "${WRIST_DEVICE}" ]; then
+    WRIST_W="${WRIST_WIDTH:-640}"
+    WRIST_H="${WRIST_HEIGHT:-480}"
+    CAMERAS="${CAMERAS}, wrist: {type: opencv, index_or_path: ${WRIST_DEVICE}, fps: 30, width: ${WRIST_W}, height: ${WRIST_H}}"
+    echo "Caméra poignet: /dev/video${WRIST_DEVICE} (${WRIST_W}x${WRIST_H})"
+fi
 
 lerobot-record \
     --robot.type=so101_follower \
@@ -16,7 +26,7 @@ lerobot-record \
     --teleop.type=so101_leader \
     --teleop.port=/dev/ttyACM1 \
     --teleop.id=leader_arm \
-    '--robot.cameras={ top: {type: zmq, server_address: localhost, port: 5555, camera_name: top, fps: 30, width: 1920, height: 1080} }' \
+    "--robot.cameras={ ${CAMERAS} }" \
     --dataset.repo_id="${HF_USER}/${TASK}" \
     --dataset.single_task="${TASK}" \
     --dataset.num_episodes="${NUM_EPISODES:-10}" \

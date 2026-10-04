@@ -12,6 +12,9 @@ record:
 		-e EPISODE_TIME=$(or $(EPISODE_TIME),10) \
 		-e RESET_TIME=$(or $(RESET_TIME),10) \
 		-e PUSH_TO_HUB=$(or $(PUSH_TO_HUB),false) \
+		$(if $(WRIST_DEVICE),-e WRIST_DEVICE=$(WRIST_DEVICE)) \
+		$(if $(WRIST_WIDTH),-e WRIST_WIDTH=$(WRIST_WIDTH)) \
+		$(if $(WRIST_HEIGHT),-e WRIST_HEIGHT=$(WRIST_HEIGHT)) \
 		$(if $(RESUME),-e RESUME=$(RESUME)) \
 		lerobot bash scripts/shell/record_with_oak.sh
 
@@ -43,12 +46,15 @@ train:
 		--output_dir=outputs/$(TASK)
 
 # Évalue le modèle entraîné sur le robot réel (inférence policy réelle, via lerobot-record)
-# Usage : make eval TASK=task_name [CHECKPOINT=last] [HF_USER=monuser] [NUM_EPISODES=5] [EPISODE_TIME=30]
+# Sans HF_USER : pointe sur le modèle final local (outputs/$(TASK)/pretrained_model)
+# Usage : make eval TASK=task_name [HF_USER=monuser] [NUM_EPISODES=5] [EPISODE_TIME=30]
 # PREREQUIS : caméra OAK branchée
 eval:
 	@$(if $(TASK),,$(error TASK non défini - Usage: make eval TASK=ma_tache))
+	@echo "Nettoyage du dataset d'éval résiduel local/eval_$(TASK)..."
+	docker compose run --rm lerobot-base python3 -c "import shutil; shutil.rmtree('/workspace/.cache/huggingface/lerobot/local/eval_$(TASK)', ignore_errors=True)"
 	docker compose run --rm \
-		-e POLICY_PATH=$(if $(HF_USER),$(HF_USER)/$(TASK),outputs/$(TASK)/checkpoints/$(or $(CHECKPOINT),last)/pretrained_model) \
+		-e POLICY_PATH=$(if $(HF_USER),$(HF_USER)/$(TASK),outputs/$(TASK)/pretrained_model) \
 		-e TASK=$(TASK) \
 		-e NUM_EPISODES=$(or $(NUM_EPISODES),5) \
 		-e EPISODE_TIME=$(or $(EPISODE_TIME),30) \
