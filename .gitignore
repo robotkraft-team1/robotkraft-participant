@@ -17,3 +17,14 @@ datasets/photo_*.jpg
 
 # Systeme
 .DS_Store
+.label-studio/
+
+# YOLO (venv, dataset converti, runs et poids téléchargés)
+yolo/.venv/
+yolo/data/
+yolo/runs/
+yolo/*.pt
+label-env/
+datasets/
+runs/
+*.pt

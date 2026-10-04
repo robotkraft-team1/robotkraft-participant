@@ -2,18 +2,13 @@
 # Lance le serveur ZMQ OAK en arrière-plan puis RobotClient piloté par un PolicyServer distant
 set -e
 
-python3 scripts/camera/oak_zmq_server.py &
-ZMQ_PID=$!
-trap "kill $ZMQ_PID 2>/dev/null || true" EXIT
-
-echo "ZMQ server PID=$ZMQ_PID, attente 3s..."
-sleep 3
+source scripts/shell/cameras.sh  # CAMERAS=oak|wrist|both, définit CAMERAS_ARG
 
 RUN_CMD=(python scripts/robot/robot_client_zmq.py
     --robot.type=so101_follower
-    --robot.port=/dev/ttyACM0
+    --robot.port="$FOLLOWER_PORT"
     --robot.id=follower_arm
-    '--robot.cameras={ top: {type: zmq, server_address: localhost, port: 5555, camera_name: top, fps: 30, width: 1920, height: 1080} }'
+    "$CAMERAS_ARG"
     --task="${TASK}"
     --server_address="${SERVER_ADDRESS}"
     --policy_type=act

@@ -170,6 +170,18 @@ class OAKCamera:
         except Exception:
             return False, None
 
+    def read_latest(self):
+        """Comme read(), mais vide la file et renvoie le frame le plus récent (évite un frame en retard
+        de plusieurs centaines de ms si la boucle appelante est plus lente que la caméra)"""
+        if self._queue is None:
+            return False, None
+        try:
+            msgs = self._queue.tryGetAll()
+            msg = msgs[-1] if msgs else self._queue.get()
+            return True, msg.getCvFrame()
+        except Exception:
+            return False, None
+
     def set(self, *args):
         pass
 

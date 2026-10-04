@@ -6,6 +6,20 @@ set -e
 RULE_FILE="/etc/udev/rules.d/99-lerobot.rules"
 VENDOR="1a86"
 
+# Lit un attribut (KERNELS ou ATTRS{serial}) dans le bloc du device USB parent qui porte
+# idVendor=$VENDOR. udev exige que KERNELS/ATTRS d'une même règle matchent le MÊME parent :
+# prendre le premier KERNELS venu (interface "1-2:1.0") ou le premier serial (contrôleur USB)
+# donne une règle qui ne matche jamais ou des serials identiques pour les deux bras.
+usb_attr() {
+    udevadm info -a -n "$1" | awk -v key="$2" -v vendor="$VENDOR" '
+        /looking at parent device/ { val = "" ; isdev = 0 }
+        index($0, key "==") { split($0, a, "\""); val = a[2] }
+        index($0, "ATTRS{idVendor}==\"" vendor "\"") { isdev = 1 }
+        isdev && val != "" { print val; exit }
+        /^$/ && isdev { exit }
+    '
+}
+
 echo "=== Setup udev SO-ARM101 ==="
 echo ""
 
@@ -21,8 +35,8 @@ if [ -z "$FOLLOWER_DEV" ]; then
 fi
 echo "  Follower détecté sur $FOLLOWER_DEV"
 
-FOLLOWER_SERIAL=$(udevadm info -a -n "$FOLLOWER_DEV" | grep -m1 'ATTRS{serial}' | awk -F'"' '{print $2}')
-FOLLOWER_KERNELS=$(udevadm info -a -n "$FOLLOWER_DEV" | grep -m1 'KERNELS' | awk -F'"' '{print $2}')
+FOLLOWER_SERIAL=$(usb_attr "$FOLLOWER_DEV" 'ATTRS{serial}')
+FOLLOWER_KERNELS=$(usb_attr "$FOLLOWER_DEV" 'KERNELS')
 echo "  Serial   : ${FOLLOWER_SERIAL:-(vide)}"
 echo "  USB path : $FOLLOWER_KERNELS"
 echo ""
@@ -39,8 +53,8 @@ if [ -z "$LEADER_DEV" ]; then
 fi
 echo "  Leader détecté sur $LEADER_DEV"
 
-LEADER_SERIAL=$(udevadm info -a -n "$LEADER_DEV" | grep -m1 'ATTRS{serial}' | awk -F'"' '{print $2}')
-LEADER_KERNELS=$(udevadm info -a -n "$LEADER_DEV" | grep -m1 'KERNELS' | awk -F'"' '{print $2}')
+LEADER_SERIAL=$(usb_attr "$LEADER_DEV" 'ATTRS{serial}')
+LEADER_KERNELS=$(usb_attr "$LEADER_DEV" 'KERNELS')
 echo "  Serial   : ${LEADER_SERIAL:-(vide)}"
 echo "  USB path : $LEADER_KERNELS"
 echo ""

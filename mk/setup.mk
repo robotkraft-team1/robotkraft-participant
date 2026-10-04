@@ -1,7 +1,9 @@
 setup-host:
 	@[ "$$(uname)" = "Linux" ] || (echo "setup-host : sans objet sur macOS/Windows (groupe dialout, spécifique Linux). Rien à faire ici." && exit 1)
-	sudo usermod -aG dialout $(USER)
-	@echo "Déconnectez-vous et reconnectez-vous pour appliquer le groupe dialout."
+	@# Debian/Ubuntu : dialout. Arch/Manjaro : uucp (dialout n'existe pas).
+	@G=$$(getent group dialout >/dev/null && echo dialout || echo uucp); \
+		echo "sudo usermod -aG $$G $(USER)"; sudo usermod -aG $$G $(USER) && \
+		echo "Déconnectez-vous et reconnectez-vous pour appliquer le groupe $$G."
 
 # Crée /dev/lerobot_follower et /dev/lerobot_leader (règles udev stables).
 # À lancer une seule fois, avec les deux bras disponibles.
@@ -36,7 +38,7 @@ down:
 shell:
 	docker compose run --rm lerobot-base
 
-# Shell avec accès aux deux bras (/dev/ttyACM0, /dev/ttyACM1 via symlinks udev)
+# Shell avec accès aux deux bras (/dev/lerobot_follower, /dev/lerobot_leader via symlinks udev)
 shell-robot:
 	docker compose run --rm lerobot bash
 

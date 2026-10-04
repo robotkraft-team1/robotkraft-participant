@@ -23,12 +23,26 @@ services:
     privileged: true
     environment:
       - DISPLAY=${DISPLAY:-:0}
+      # privileged expose tous les /dev/ttyACM* de l'hôte sous leur nom, et Docker IGNORE alors la
+      # section devices: (un mapping /dev/lerobot_follower:/dev/ttyACM0 n'a aucun effet). Le vrai
+      # port de chaque bras est donc résolu sur l'hôte depuis les symlinks udev (mk/robot.mk).
+      - FOLLOWER_PORT=${FOLLOWER_PORT:-/dev/ttyACM0}
+      - LEADER_PORT=${LEADER_PORT:-/dev/ttyACM1}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
       - /dev/bus/usb:/dev/bus/usb
-    devices:
-      - /dev/lerobot_follower:/dev/ttyACM0
-      - /dev/lerobot_leader:/dev/ttyACM1
+
+  # Comme lerobot (robot + caméras) avec accès au GPU, pour make eval en variante CUDA
+  lerobot-robot-gpu:
+    extends:
+      service: lerobot
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
   lerobot-camera:
     extends:
@@ -41,13 +55,13 @@ services:
     extends:
       service: lerobot-base
     devices:
-      - /dev/ttyACM0:/dev/ttyACM0 # follower seul, sans symlink udev
+      - ${FOLLOWER_DEV:-/dev/ttyACM0}:/dev/ttyACM0 # follower seul : symlink udev si présent (voir mk/robot.mk), sinon ttyACM0
 
   lerobot-leader:
     extends:
       service: lerobot-base
     devices:
-      - /dev/ttyACM1:/dev/ttyACM1 # leader seul, sans symlink udev
+      - ${LEADER_DEV:-/dev/ttyACM1}:/dev/ttyACM1 # leader seul : symlink udev si présent (voir mk/robot.mk), sinon ttyACM1
 
   lerobot-gpu:
     extends:

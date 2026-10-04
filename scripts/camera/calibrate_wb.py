@@ -7,7 +7,7 @@ import sys
 import cv2
 import numpy as np
 
-from camera_utils import ZMQCamera
+from camera_utils import V4L2Camera, ZMQCamera
 
 CAMERA_CONFIG = "datasets/camera_config.json"
 
@@ -24,10 +24,12 @@ def apply_wb(frame, a_off, b_off):
 
 def main():
     """Boucle caméra avec trackbars a/b en temps réel. S sauve les offsets"""
-    cap = ZMQCamera()
+    # WB_DEVICE=/dev/videoX : webcam USB (caméra poignet) ; sinon flux ZMQ de l'OAK-D Lite
+    device = os.environ.get("WB_DEVICE")
+    cap = V4L2Camera(device) if device else ZMQCamera()
     cap.open()
     if not cap.isOpened():
-        print("OAK-D Lite inaccessible.")
+        print(f"Caméra {device} inaccessible." if device else "OAK-D Lite inaccessible.")
         sys.exit(1)
 
     win = "Preview WB  |  Q=quitter"
