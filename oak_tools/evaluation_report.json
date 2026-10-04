@@ -1,0 +1,188 @@
+{
+  "ancien_best_v1": {
+    "ancien_dataset": {
+      "precision": 0.9545,
+      "recall": 0.9219,
+      "mAP50": 0.9484,
+      "mAP50_95": 0.5083,
+      "fitness": 0.5083,
+      "speed_preprocess_ms": 2.24,
+      "speed_inference_ms": 17.43,
+      "speed_postprocess_ms": 2.63,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.9018,
+          "mAP50_95": 0.4425
+        },
+        "rack": {
+          "mAP50": 0.995,
+          "mAP50_95": 0.5741
+        }
+      }
+    },
+    "nouveau_dataset": {
+      "precision": 0.6618,
+      "recall": 0.6531,
+      "mAP50": 0.6759,
+      "mAP50_95": 0.4731,
+      "fitness": 0.4731,
+      "speed_preprocess_ms": 3.22,
+      "speed_inference_ms": 10.65,
+      "speed_postprocess_ms": 1.86,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.6352,
+          "mAP50_95": 0.4912
+        },
+        "rack": {
+          "mAP50": 0.7167,
+          "mAP50_95": 0.4549
+        }
+      }
+    },
+    "deux_combines": {
+      "precision": 0.9275,
+      "recall": 0.6765,
+      "mAP50": 0.8076,
+      "mAP50_95": 0.4418,
+      "fitness": 0.4418,
+      "speed_preprocess_ms": 1.87,
+      "speed_inference_ms": 5.72,
+      "speed_postprocess_ms": 4.29,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.7698,
+          "mAP50_95": 0.4208
+        },
+        "rack": {
+          "mAP50": 0.8454,
+          "mAP50_95": 0.4629
+        }
+      }
+    }
+  },
+  "nouveau_ft_new": {
+    "ancien_dataset": {
+      "precision": 0.7418,
+      "recall": 0.8583,
+      "mAP50": 0.8762,
+      "mAP50_95": 0.4071,
+      "fitness": 0.4071,
+      "speed_preprocess_ms": 0.44,
+      "speed_inference_ms": 6.68,
+      "speed_postprocess_ms": 0.74,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.8246,
+          "mAP50_95": 0.3331
+        },
+        "rack": {
+          "mAP50": 0.9279,
+          "mAP50_95": 0.4812
+        }
+      }
+    },
+    "nouveau_dataset": {
+      "precision": 0.8595,
+      "recall": 0.8135,
+      "mAP50": 0.8915,
+      "mAP50_95": 0.5827,
+      "fitness": 0.5827,
+      "speed_preprocess_ms": 1.8,
+      "speed_inference_ms": 7.17,
+      "speed_postprocess_ms": 2.3,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.8889,
+          "mAP50_95": 0.5881
+        },
+        "rack": {
+          "mAP50": 0.8941,
+          "mAP50_95": 0.5773
+        }
+      }
+    },
+    "deux_combines": {
+      "precision": 0.8497,
+      "recall": 0.7524,
+      "mAP50": 0.8729,
+      "mAP50_95": 0.4771,
+      "fitness": 0.4771,
+      "speed_preprocess_ms": 2.14,
+      "speed_inference_ms": 5.8,
+      "speed_postprocess_ms": 1.45,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.8555,
+          "mAP50_95": 0.4443
+        },
+        "rack": {
+          "mAP50": 0.8903,
+          "mAP50_95": 0.51
+        }
+      }
+    }
+  },
+  "nouveau_ft_combined": {
+    "ancien_dataset": {
+      "precision": 0.9586,
+      "recall": 0.9442,
+      "mAP50": 0.9633,
+      "mAP50_95": 0.5661,
+      "fitness": 0.5661,
+      "speed_preprocess_ms": 0.43,
+      "speed_inference_ms": 4.59,
+      "speed_postprocess_ms": 0.61,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.9316,
+          "mAP50_95": 0.5176
+        },
+        "rack": {
+          "mAP50": 0.995,
+          "mAP50_95": 0.6145
+        }
+      }
+    },
+    "nouveau_dataset": {
+      "precision": 0.9031,
+      "recall": 0.8618,
+      "mAP50": 0.9022,
+      "mAP50_95": 0.6045,
+      "fitness": 0.6045,
+      "speed_preprocess_ms": 3.36,
+      "speed_inference_ms": 3.77,
+      "speed_postprocess_ms": 0.69,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.8878,
+          "mAP50_95": 0.593
+        },
+        "rack": {
+          "mAP50": 0.9165,
+          "mAP50_95": 0.6159
+        }
+      }
+    },
+    "deux_combines": {
+      "precision": 0.9316,
+      "recall": 0.9024,
+      "mAP50": 0.9312,
+      "mAP50_95": 0.5849,
+      "fitness": 0.5849,
+      "speed_preprocess_ms": 1.34,
+      "speed_inference_ms": 6.14,
+      "speed_postprocess_ms": 2.21,
+      "per_class": {
+        "tube": {
+          "mAP50": 0.9205,
+          "mAP50_95": 0.5452
+        },
+        "rack": {
+          "mAP50": 0.9419,
+          "mAP50_95": 0.6245
+        }
+      }
+    }
+  }
+}

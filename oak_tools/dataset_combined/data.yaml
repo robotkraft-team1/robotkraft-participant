@@ -1,0 +1,6 @@
+path: oak_tools/dataset_combined
+train: images/train
+val: images/val
+names:
+  0: tube
+  1: rack

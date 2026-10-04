@@ -15,5 +15,25 @@ datasets/*.npy
 datasets/photo_*.jpg
 !datasets/camera_config.json
 
-# Systeme
+# Systeme et IDE
 .DS_Store
+.idea/
+*.swp
+*~
+
+# Datasets et runs de vision (oak_tools)
+oak_tools/.cache/
+oak_tools/.agents/
+oak_tools/dataset_raw/
+oak_tools/dataset_combined/images/
+oak_tools/dataset_yolo/
+oak_tools/dataset_preannotated/
+oak_tools/annotations/
+oak_tools/runs/
+runs/
+
+# Poids volumineux / pré-entraînés téléchargés automatiquement
+oak_tools/weights/clip/
+oak_tools/*.pt
+*.cache
+

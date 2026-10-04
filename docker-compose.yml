@@ -40,12 +40,14 @@ services:
   lerobot-follower:
     extends:
       service: lerobot-base
+    privileged: true
     devices:
       - /dev/ttyACM0:/dev/ttyACM0 # follower seul, sans symlink udev
 
   lerobot-leader:
     extends:
       service: lerobot-base
+    privileged: true
     devices:
       - /dev/ttyACM1:/dev/ttyACM1 # leader seul, sans symlink udev
 

@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "luxonis": {
+      "source": "luxonis/skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxonis/SKILL.md",
+      "computedHash": "7b9d4e3a5e7c04c3adfcf5c954da5df142f4a9d2b64d90c7add0ab4bdb687338"
+    },
+    "luxonis-app": {
+      "source": "luxonis/skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxonis-app/SKILL.md",
+      "computedHash": "f1c7060064bbafc776bff1d9185d180c0bb27d620fc8808a389e53f09f80674b"
+    },
+    "luxonis-device-setup": {
+      "source": "luxonis/skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxonis-device-setup/SKILL.md",
+      "computedHash": "f80840fc99e43367f96e67d49284778905818fedd4a3b5334503b8746a72630d"
+    },
+    "luxonis-inspect": {
+      "source": "luxonis/skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxonis-inspect/SKILL.md",
+      "computedHash": "7d8f680594189fcda787c8b00032d4ed237dc44a2509a575de6e5f7d4196ac22"
+    },
+    "luxonis-model": {
+      "source": "luxonis/skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxonis-model/SKILL.md",
+      "computedHash": "db87bbda58222e6e3f2a70e17c069c997fe4811eb041eb2458317dcb5cbec8af"
+    },
+    "luxonis-record": {
+      "source": "luxonis/skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxonis-record/SKILL.md",
+      "computedHash": "1028feb786fb315442090be5363ad93253d573762d389f3e755e14e0ae9c0677"
+    },
+    "luxonis-troubleshoot": {
+      "source": "luxonis/skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxonis-troubleshoot/SKILL.md",
+      "computedHash": "6b2ce806c6fdcad4152e8b7d0531be51fb9769ad445958004040d80b7bb9c402"
+    },
+    "luxonis-workspace": {
+      "source": "luxonis/skills",
+      "sourceType": "github",
+      "skillPath": "skills/luxonis-workspace/SKILL.md",
+      "computedHash": "19ea7a7a3ceb06950847805cd6447b70ee3686cfb637bb23004b8e7c1edb7fe1"
+    }
+  }
+}

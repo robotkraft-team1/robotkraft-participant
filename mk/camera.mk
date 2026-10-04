@@ -37,5 +37,5 @@ view-oak:
 	xhost +local:docker
 	docker compose run --rm \
 		-e DISPLAY=$(DISPLAY) -v /tmp/.X11-unix:/tmp/.X11-unix \
-		-e WIDTH=$(or $(WIDTH),1920) -e HEIGHT=$(or $(HEIGHT),1080) -e FPS=$(or $(FPS),30) \
+		-e WIDTH=$(or $(WIDTH),640) -e HEIGHT=$(or $(HEIGHT),480) -e FPS=$(or $(FPS),30) \
 		lerobot-camera bash scripts/shell/calibrate_with_oak.sh oak_viewer.py

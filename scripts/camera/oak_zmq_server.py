@@ -12,9 +12,9 @@ import zmq
 
 CAMERA_NAME = "top"
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 5555
-WIDTH = int(os.environ.get("WIDTH", "1920"))
-HEIGHT = int(os.environ.get("HEIGHT", "1080"))
-FPS = int(os.environ.get("FPS", "30"))
+WIDTH = int(os.environ.get("WIDTH", "640"))
+HEIGHT = int(os.environ.get("HEIGHT", "480"))
+FPS = int(os.environ.get("FPS", 30))
 
 context = zmq.Context()
 socket = context.socket(zmq.PUB)
@@ -23,7 +23,7 @@ socket.setsockopt(zmq.SNDHWM, 20)
 # LINGER=0 : close() ne bloque pas à attendre l'envoi des messages en attente
 socket.setsockopt(zmq.LINGER, 0)
 socket.bind(f"tcp://*:{PORT}")
-print(f"OAK ZMQ server port={PORT} camera_name={CAMERA_NAME}")
+print(f"OAK ZMQ server port={PORT} camera_name={CAMERA_NAME} ({WIDTH}x{HEIGHT}@{FPS}fps)")
 
 with dai.Pipeline() as pipeline:
     cam = pipeline.create(dai.node.Camera).build()
@@ -35,7 +35,10 @@ with dai.Pipeline() as pipeline:
     try:
         while pipeline.isRunning():
             t0 = time.time()
-            bgr = queue.get().getCvFrame()
+            frame_data = queue.get()
+            if frame_data is None:
+                break
+            bgr = frame_data.getCvFrame()
             # lerobot ZMQCamera (color_mode=RGB) decode sans reconvertir : swap ici
             # pour que le frame reçu côté lerobot-record soit dans le bon ordre R/G/B.
             rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
@@ -50,8 +53,10 @@ with dai.Pipeline() as pipeline:
             sleep = (1.0 / FPS) - (time.time() - t0)
             if sleep > 0:
                 time.sleep(sleep)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, SystemExit):
         pass
+    except Exception as e:
+        print(f"OAK ZMQ server arrêté: {e}", file=sys.stderr)
     finally:
         socket.close()
         context.term()
